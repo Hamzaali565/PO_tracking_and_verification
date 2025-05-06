@@ -1,6 +1,5 @@
 import { uploads } from "../helper/multer.mjs";
 
-// app.post("/api/v1/upload_file", uploads.array("files", 10), (req, res) => {
 const file_handler = async (req, res) => {
   try {
     let urlMetaData = "192.168.18.15";
