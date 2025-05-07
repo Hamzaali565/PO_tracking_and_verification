@@ -25,6 +25,7 @@ const file_handler = async (req, res) => {
 
     const response = new po_model({
       po_number,
+      createdUser: req?.username,
       meta_data: fileUrls,
     });
 
@@ -55,7 +56,10 @@ const update_handler = async (req, res) => {
 
     const response = await po_model.findByIdAndUpdate(
       { _id },
-      { $push: { meta_data: { $each: file_url } } },
+      {
+        $push: { meta_data: { $each: file_url } },
+        $set: { updatedUser: req?.username },
+      },
       { new: true }
     );
 
@@ -77,7 +81,7 @@ const get_po_data = async (req, res) => {
         .json({ message: "All parameters are required !!!" });
     }
     const response = await po_model.findOne({ po_number });
-    if (!po_number) {
+    if (!response) {
       return res.status(404).json({ message: "PO not found" });
     }
     res.status(201).json({ data: response });
