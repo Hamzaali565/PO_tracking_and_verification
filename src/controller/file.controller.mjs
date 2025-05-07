@@ -11,6 +11,10 @@ const file_handler = async (req, res) => {
         .status(404)
         .json({ message: "All parameters are required !!!" });
     }
+    const duplicate_check = await po_model.findOne({ po_number });
+    if (duplicate_check) {
+      return res.status(400).json({ message: "PO already exist !!!" });
+    }
     if (!files || files.length === 0)
       return res.status(400).json({ message: "No file uploaded" });
 
@@ -47,7 +51,7 @@ const update_handler = async (req, res) => {
     }
     const file_url = files.map((file) => {
       return `http://${urlMetaData}:3001/uploads/${file.filename}`;
-    })
+    });
 
     const response = await po_model.findByIdAndUpdate(
       { _id },
@@ -64,4 +68,22 @@ const update_handler = async (req, res) => {
   }
 };
 
-export { file_handler, update_handler };
+const get_po_data = async (req, res) => {
+  try {
+    const { po_number } = req.query;
+    if (!po_number) {
+      return res
+        .status(400)
+        .json({ message: "All parameters are required !!!" });
+    }
+    const response = await po_model.findOne({ po_number });
+    if (!po_number) {
+      return res.status(404).json({ message: "PO not found" });
+    }
+    res.status(201).json({ data: response });
+  } catch (error) {
+    console.log("error --->", error);
+  }
+};
+
+export { file_handler, update_handler, get_po_data };
