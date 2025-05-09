@@ -2,7 +2,7 @@ import { Schema, model } from "mongoose";
 
 const po_schema = new Schema(
   {
-    po_number: { type: String, required: true, lowercase: true, trim: true },
+    po_number: { type: String, required: true, uppercase: true, trim: true },
     createdUser: { type: String, required: true },
     updatedUser: { type: String },
     meta_data: { type: Array, required: true },

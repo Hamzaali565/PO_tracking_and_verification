@@ -5,7 +5,6 @@ let urlMetaData = "192.168.18.13";
 const file_handler = async (req, res) => {
   try {
     const files = req.files;
-    console.log(req.files, req.body);
     const { po_number } = req.body;
 
     if (!po_number) {
@@ -92,4 +91,30 @@ const get_po_data = async (req, res) => {
   }
 };
 
-export { file_handler, update_handler, get_po_data };
+const all_po_data = async (req, res) => {
+  try {
+    const { toDate, fromDate } = req.query;
+
+    if (!fromDate || !toDate) {
+      res.status(404).json({ message: "Both Dates Are Required !!!" });
+      return;
+    }
+
+    const from = new Date(fromDate);
+    const to = new Date(toDate);
+    to.setHours(23, 59, 59, 999);
+    const response = await po_model.find(
+      { createdAt: { $gte: from, $lte: to } },
+      "-meta_data"
+    );
+    if (response.length === 0) {
+      return res.status(404).json({ message: "No data to be shown !!!" });
+    }
+    res.status(200).json({ data: response });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export { file_handler, update_handler, get_po_data, all_po_data };
