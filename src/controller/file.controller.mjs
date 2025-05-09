@@ -47,16 +47,16 @@ const update_handler = async (req, res) => {
     if (!files) {
       return res.status(404).json({ message: "No data to be update" });
     }
-    const { _id } = req.body;
-    if (!_id) {
+    const { po_number } = req.body;
+    if (!po_number) {
       return res.status(404).json({ message: "All parameters are required" });
     }
     const file_url = files.map((file) => {
       return `http://${urlMetaData}:3001/uploads/${file.filename}`;
     });
 
-    const response = await po_model.findByIdAndUpdate(
-      { _id },
+    const response = await po_model.findOneAndUpdate(
+      { po_number },
       {
         $push: { meta_data: { $each: file_url } },
         $set: { updatedUser: req?.username },
