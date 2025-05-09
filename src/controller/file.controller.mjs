@@ -1,11 +1,13 @@
 import { uploads } from "../helper/multer.mjs";
 import { po_model } from "../models/po.model.mjs";
 
-let urlMetaData = "192.168.18.15";
+let urlMetaData = "192.168.18.13";
 const file_handler = async (req, res) => {
   try {
     const files = req.files;
+    console.log(req.files, req.body);
     const { po_number } = req.body;
+
     if (!po_number) {
       return res
         .status(404)

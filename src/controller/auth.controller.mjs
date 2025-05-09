@@ -40,7 +40,8 @@ const login_user = async (req, res) => {
         .json({ message: "All parameters are required !!!" });
     }
     const response = await auth_model.findOne({ username });
-    if (!username) {
+
+    if (!response) {
       // bad request
       return res.status(404).json({ message: "User not exist !!!" });
     }
